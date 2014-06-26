@@ -65,7 +65,7 @@ var app = {
 
     function onMessageArrived(message) {
       alert("onMessageArrived: " + message.destinationName + ": " + message.payloadString);
-      var html = "onMessageArrived: " + message.destinationName + ": " + message.payloadString);
+      var html = "onMessageArrived: " + message.destinationName + ": " + message.payloadString;
       
       document.getElementById('msg').innerHTML(html);
       // my stuff ...
