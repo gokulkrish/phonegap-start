@@ -37,37 +37,45 @@ var app = {
   onDeviceReady: function () {
     alert('device ready');
 
+    var socket = io.connect('http://192.168.1.132:5000');
+
     var suc = function (pos) {
-      alert(pos.coords.latitude + ' ' + pos.coords.longitude);
+      alert('geo');
+      socket.emit('geoData', {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+        deviceId: device.uuid,
+        ts: Date.now()
+      });
     };
     var fail = function () {};
 
     navigator.geolocation.getCurrentPosition(suc, fail);
     navigator.geolocation.watchPosition(suc, fail);
 
-    var client = new Paho.MQTT.Client("ws://iot.eclipse.org", 1883, "clientIddssddsds");
-    client.onConnectionLost = onConnectionLost;
-    client.onMessageArrived = onMessageArrived;
-    client.connect({onSuccess:onConnect});
-
-    function onConnect() {
-    // Once a connection has been made, make a subscription and send a message.
-      //console.log("onConnect");
-      alert("onConnect");
-      client.subscribe("/pulse");
-      var message = new Paho.MQTT.Message("Hello");
-      message.destinationName = "/world";
-      client.send(message); 
-    }
-    function onConnectionLost(responseObject) {
-      if (responseObject.errorCode !== 0)
-      //console.log("onConnectionLost:"+responseObject.errorMessage);
-      alert("onConnectionLost:"+responseObject.errorMessage);
-    }
-    function onMessageArrived(message) {
-      //console.log("onMessageArrived:"+message.payloadString);
-      alert("onMessageArrived:"+message.payloadString);
-      client.disconnect(); 
-    }
+    //    var client = new Paho.MQTT.Client("ws://iot.eclipse.org", 1883, "clientIddssddsds");
+    //    client.onConnectionLost = onConnectionLost;
+    //    client.onMessageArrived = onMessageArrived;
+    //    client.connect({onSuccess:onConnect});
+    //
+    //    function onConnect() {
+    //    // Once a connection has been made, make a subscription and send a message.
+    //      //console.log("onConnect");
+    //      alert("onConnect");
+    //      client.subscribe("/pulse");
+    //      var message = new Paho.MQTT.Message("Hello");
+    //      message.destinationName = "/world";
+    //      client.send(message); 
+    //    }
+    //    function onConnectionLost(responseObject) {
+    //      if (responseObject.errorCode !== 0)
+    //      //console.log("onConnectionLost:"+responseObject.errorMessage);
+    //      alert("onConnectionLost:"+responseObject.errorMessage);
+    //    }
+    //    function onMessageArrived(message) {
+    //      //console.log("onMessageArrived:"+message.payloadString);
+    //      alert("onMessageArrived:"+message.payloadString);
+    //      client.disconnect(); 
+    //    }
   }
 };
