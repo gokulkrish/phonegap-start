@@ -37,7 +37,7 @@ var app = {
   onDeviceReady: function () {
     alert('device ready');
 
-    var socket = io('http://192.168.1.132:3005');
+    var socket = io('http://pulsenavapp.herokuapp.com');
 
     var suc = function (pos) {
       alert('geo');
