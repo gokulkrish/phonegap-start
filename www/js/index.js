@@ -16,6 +16,8 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+'use strict';
+
 var app = {
   // Application Constructor
   initialize: function () {
@@ -37,39 +39,35 @@ var app = {
 
     var suc = function (pos) {
       alert(pos.coords.latitude + ' ' + pos.coords.longitude);
-    }
+    };
     var fail = function () {};
 
     navigator.geolocation.getCurrentPosition(suc, fail);
     navigator.geolocation.watchPosition(suc, fail);
 
-    var client = new Messaging.Client("ws://iot.eclipse.org/ws", "clientId");
+    var client = new Paho.MQTT.Client("ws://iot.eclipse.org", 1883, "clientIddssddsds");
     client.onConnectionLost = onConnectionLost;
     client.onMessageArrived = onMessageArrived;
-    
-    client.connect({
-      onSuccess: onConnect
-    });
+    client.connect({onSuccess:onConnect});
 
     function onConnect() {
-      // Once a connection has been made, make a subscription and send a message.
-      alert('MQTT Connected');
-      client.subscribe("/mqttrocks");
-    };
-
+    // Once a connection has been made, make a subscription and send a message.
+      //console.log("onConnect");
+      alert("onConnect");
+      client.subscribe("/pulse");
+      var message = new Paho.MQTT.Message("Hello");
+      message.destinationName = "/world";
+      client.send(message); 
+    }
     function onConnectionLost(responseObject) {
       if (responseObject.errorCode !== 0)
-        //console.log("onConnectionLost:" + responseObject.errorMessage);
-        alert("onConnectionLost:" + responseObject.errorMessage);
-    };
-
+      //console.log("onConnectionLost:"+responseObject.errorMessage);
+      alert("onConnectionLost:"+responseObject.errorMessage);
+    }
     function onMessageArrived(message) {
-      alert("onMessageArrived: " + message.destinationName + ": " + message.payloadString);
-      var html = "onMessageArrived: " + message.destinationName + ": " + message.payloadString;
-      
-      document.getElementById('msg').innerHTML(html);
-      // my stuff ...
-    };
-
+      //console.log("onMessageArrived:"+message.payloadString);
+      alert("onMessageArrived:"+message.payloadString);
+      client.disconnect(); 
+    }
   }
 };
