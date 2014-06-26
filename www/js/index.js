@@ -37,7 +37,7 @@ var app = {
   onDeviceReady: function () {
     alert('device ready');
 
-    var socket = io.connect('http://192.168.1.132:5000');
+    var socket = io('http://192.168.1.132:3005');
 
     var suc = function (pos) {
       alert('geo');
