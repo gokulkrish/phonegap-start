@@ -17,28 +17,59 @@
  * under the License.
  */
 var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicitly call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        alert('device ready');
-        
-        var suc = function(pos) { alert(pos.coords.latitude + ' ' + pos.coords.longitude); } 
-        var fail = function() {};
-        
-        navigator.geolocation.getCurrentPosition(suc, fail);
-        navigator.geolocation.watchPosition(suc, fail);
+  // Application Constructor
+  initialize: function () {
+    this.bindEvents();
+  },
+  // Bind Event Listeners
+  //
+  // Bind any events that are required on startup. Common events are:
+  // 'load', 'deviceready', 'offline', and 'online'.
+  bindEvents: function () {
+    document.addEventListener('deviceready', this.onDeviceReady, false);
+  },
+  // deviceready Event Handler
+  //
+  // The scope of 'this' is the event. In order to call the 'receivedEvent'
+  // function, we must explicitly call 'app.receivedEvent(...);'
+  onDeviceReady: function () {
+    alert('device ready');
+
+    var suc = function (pos) {
+      alert(pos.coords.latitude + ' ' + pos.coords.longitude);
     }
+    var fail = function () {};
+
+    navigator.geolocation.getCurrentPosition(suc, fail);
+    navigator.geolocation.watchPosition(suc, fail);
+
+    var client = new Messaging.Client("ws://iot.eclipse.org/ws", "clientId");
+    client.onConnectionLost = onConnectionLost;
+    client.onMessageArrived = onMessageArrived;
+    
+    client.connect({
+      onSuccess: onConnect
+    });
+
+    function onConnect() {
+      // Once a connection has been made, make a subscription and send a message.
+      alert('MQTT Connected');
+      client.subscribe("/mqttrocks");
+    };
+
+    function onConnectionLost(responseObject) {
+      if (responseObject.errorCode !== 0)
+        //console.log("onConnectionLost:" + responseObject.errorMessage);
+        alert("onConnectionLost:" + responseObject.errorMessage);
+    };
+
+    function onMessageArrived(message) {
+      alert("onMessageArrived: " + message.destinationName + ": " + message.payloadString);
+      var html = "onMessageArrived: " + message.destinationName + ": " + message.payloadString);
+      
+      document.getElementById('msg').innerHTML(html);
+      // my stuff ...
+    };
+
+  }
 };
