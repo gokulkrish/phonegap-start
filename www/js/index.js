@@ -35,7 +35,10 @@ var app = {
     // The scope of 'this' is the event. In order to call the 'receivedEvent'
     // function, we must explicitly call 'app.receivedEvent(...);'
     onDeviceReady: function () {
-        window.plugin.backgroundMode.enable();
+        document.addEventListener('pause', onPause, false);
+        document.addEventListener('resume', onResume, false);
+
+        window.plugin.backgroundMode.disable();
         alert('device ready');
 
         var socket = io('http://pulsenavapp.herokuapp.com');
@@ -44,6 +47,15 @@ var app = {
             lat: '',
             lng: ''
         };
+
+        function onResume() {
+            window.plugin.backgroundMode.disable();
+        }
+
+        function onPause() {
+            window.plugin.backgroundMode.enable();
+        }
+
 
         var suc = function (pos) {
             alert('geo');
@@ -57,7 +69,7 @@ var app = {
             var msg = document.getElementById('msg');
 
             if (pos.coords.latitude != prev.lat || pos.coords.longitude != prev.lng) {
-                navigator.notification.beep(2);
+                navigator.notification.vibrate(1000);
                 msg.innerHTML += 'lat: ' + pos.coords.latitude + '<br/> lng: ' + pos.coords.longitude;
                 prev.lat = pos.coords.latitude;
                 prev.lng = pos.coords.longitude;
@@ -65,6 +77,8 @@ var app = {
         };
 
         var fail = function () {};
+
+
 
         navigator.geolocation.getCurrentPosition(suc, fail);
         navigator.geolocation.watchPosition(suc, fail);
