@@ -73,7 +73,7 @@ var app = {
 
             if (pos.coords.latitude != prev.lat || pos.coords.longitude != prev.lng) {
                 navigator.notification.vibrate(1000);
-                msg.innerHTML += 'lat: ' + pos.coords.latitude + '<br/> lng: ' + pos.coords.longitude;
+                msg.innerHTML = msg.innerHTML.replace('lat: ' + pos.coords.latitude + '<br/> lng: ' + pos.coords.longitude);
                 prev.lat = pos.coords.latitude;
                 prev.lng = pos.coords.longitude;
             }
