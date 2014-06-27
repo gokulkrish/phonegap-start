@@ -49,22 +49,25 @@ var app = {
         };
 
         function onResume() {
+            console.log('in resume mode');
             window.plugin.backgroundMode.disable();
         }
 
         function onPause() {
+            console.log('in background mode');
             window.plugin.backgroundMode.enable();
         }
 
 
         var suc = function (pos) {
-            alert('geo');
-            socket.emit('geoData', {
-                lat: pos.coords.latitude,
-                lng: pos.coords.longitude,
-                deviceId: device.uuid,
-                ts: Date.now()
-            });
+            alert('connected..');
+            setTimeout(
+                socket.emit('geoData', {
+                    lat: pos.coords.latitude,
+                    lng: pos.coords.longitude,
+                    deviceId: device.uuid,
+                    ts: Date.now()
+                }), 1000);
 
             var msg = document.getElementById('msg');
 
