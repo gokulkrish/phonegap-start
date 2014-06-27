@@ -48,15 +48,7 @@ var app = {
             lng: ''
         };
 
-        function onResume() {
-            alert('in resume mode');
-            window.plugin.backgroundMode.disable();
-        }
 
-        function onPause() {
-            alert('in background mode');
-            window.plugin.backgroundMode.enable();
-        }
 
 
         var suc = function (pos) {
@@ -82,7 +74,22 @@ var app = {
 
 
 
+
         navigator.geolocation.getCurrentPosition(suc, fail);
         navigator.geolocation.watchPosition(suc, fail);
+
+        //        var bgGeo = window.plugins.backgroundGeoLocation;
+
+
+    }
+
+    function onResume() {
+        alert('in resume mode');
+        window.plugin.backgroundMode.disable();
+    }
+
+    function onPause() {
+        alert('in background mode');
+        window.plugin.backgroundMode.enable();
     }
 };
