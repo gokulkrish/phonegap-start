@@ -19,64 +19,54 @@
 'use strict';
 
 var app = {
-  // Application Constructor
-  initialize: function () {
-    this.bindEvents();
-  },
-  // Bind Event Listeners
-  //
-  // Bind any events that are required on startup. Common events are:
-  // 'load', 'deviceready', 'offline', and 'online'.
-  bindEvents: function () {
-    document.addEventListener('deviceready', this.onDeviceReady, false);
-  },
-  // deviceready Event Handler
-  //
-  // The scope of 'this' is the event. In order to call the 'receivedEvent'
-  // function, we must explicitly call 'app.receivedEvent(...);'
-  onDeviceReady: function () {
-    window.plugin.backgroundMode.enable();
-    alert('device ready');
-
-    var socket = io('http://pulsenavapp.herokuapp.com');
-
-    var suc = function (pos) {
-      alert('geo');
-      socket.emit('geoData', {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-        deviceId: device.uuid,
-        ts: Date.now()
-      });
-    };
-    var fail = function () {};
-
-    navigator.geolocation.getCurrentPosition(suc, fail);
-    navigator.geolocation.watchPosition(suc, fail);
-
-    //    var client = new Paho.MQTT.Client("ws://iot.eclipse.org", 1883, "clientIddssddsds");
-    //    client.onConnectionLost = onConnectionLost;
-    //    client.onMessageArrived = onMessageArrived;
-    //    client.connect({onSuccess:onConnect});
+    // Application Constructor
+    initialize: function () {
+        this.bindEvents();
+    },
+    // Bind Event Listeners
     //
-    //    function onConnect() {
-    //    // Once a connection has been made, make a subscription and send a message.
-    //      //console.log("onConnect");
-    //      alert("onConnect");
-    //      client.subscribe("/pulse");
-    //      var message = new Paho.MQTT.Message("Hello");
-    //      message.destinationName = "/world";
-    //      client.send(message); 
-    //    }
-    //    function onConnectionLost(responseObject) {
-    //      if (responseObject.errorCode !== 0)
-    //      //console.log("onConnectionLost:"+responseObject.errorMessage);
-    //      alert("onConnectionLost:"+responseObject.errorMessage);
-    //    }
-    //    function onMessageArrived(message) {
-    //      //console.log("onMessageArrived:"+message.payloadString);
-    //      alert("onMessageArrived:"+message.payloadString);
-    //      client.disconnect(); 
-    //    }
-  }
+    // Bind any events that are required on startup. Common events are:
+    // 'load', 'deviceready', 'offline', and 'online'.
+    bindEvents: function () {
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+    },
+    // deviceready Event Handler
+    //
+    // The scope of 'this' is the event. In order to call the 'receivedEvent'
+    // function, we must explicitly call 'app.receivedEvent(...);'
+    onDeviceReady: function () {
+        window.plugin.backgroundMode.enable();
+        alert('device ready');
+
+        var socket = io('http://pulsenavapp.herokuapp.com');
+
+        var prev = {
+            lat: '',
+            lng: ''
+        };
+
+        var suc = function (pos) {
+            alert('geo');
+            socket.emit('geoData', {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                deviceId: device.uuid,
+                ts: Date.now()
+            });
+
+            var msg = document.getElementById('msg');
+
+            if (pos.coords.latitude != prev.lat || pos.coords.longitude != prev.lng) {
+                navigator.notification.beep(2);
+                msg.innerHTML += 'lat: ' + pos.coords.latitude + '<br/> lng: ' + pos.coords.longitude;
+                prev.lat = pos.coords.latitude;
+                prev.lng = pos.coords.longitude;
+            }
+        };
+
+        var fail = function () {};
+
+        navigator.geolocation.getCurrentPosition(suc, fail);
+        navigator.geolocation.watchPosition(suc, fail);
+    }
 };
