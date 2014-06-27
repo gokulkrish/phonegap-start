@@ -49,12 +49,12 @@ var app = {
         };
 
         function onResume() {
-            console.log('in resume mode');
+            alert('in resume mode');
             window.plugin.backgroundMode.disable();
         }
 
         function onPause() {
-            console.log('in background mode');
+            alert('in background mode');
             window.plugin.backgroundMode.enable();
         }
 
