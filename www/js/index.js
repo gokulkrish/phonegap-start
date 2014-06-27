@@ -49,6 +49,15 @@ var app = {
         };
 
 
+        function onResume() {
+            alert('in resume mode');
+            window.plugin.backgroundMode.disable();
+        }
+
+        function onPause() {
+            alert('in background mode');
+            window.plugin.backgroundMode.enable();
+        }
 
 
         var suc = function (pos) {
@@ -79,17 +88,59 @@ var app = {
         navigator.geolocation.watchPosition(suc, fail);
 
         //        var bgGeo = window.plugins.backgroundGeoLocation;
+        var bgGeo = window.plugins.backgroundGeoLocation;
+
+        /**
+         * This would be your own callback for Ajax-requests after POSTing background geolocation to your server.
+         */
+        var yourAjaxCallback = function (response) {
+            ////
+            // IMPORTANT:  You must execute the #finish method here to inform the native plugin that you're finished,
+            //  and the background-task may be completed.  You must do this regardless if your HTTP request is successful or not.
+            // IF YOU DON'T, ios will CRASH YOUR APP for spending too much time in the background.
+            //
+            //
+            bgGeo.finish();
+        };
+
+        /**
+         * This callback will be executed every time a geolocation is recorded in the background.
+         */
+        var callbackFn = function (pos) {
+            alert('[js] BackgroundGeoLocation callback:  ' + pos.coords.latitudue + ',' + pos.coords.longitude);
+            // Do your HTTP request here to POST location to your server.
+            //
+            //
+            suc();
+
+            yourAjaxCallback.call(this);
+        };
+
+        var failureFn = function (error) {
+            console.log('BackgroundGeoLocation error');
+        };
+
+        // BackgroundGeoLocation is highly configurable.
+        bgGeo.configure(callbackFn, failureFn, {
+            //            url: 'http://only.for.android.com/update_location.json', // <-- only required for Android; ios allows javascript callbacks for your http
+            //            ,
+            desiredAccuracy: 10,
+            stationaryRadius: 20,
+            distanceFilter: 30,
+            debug: true // <-- enable this hear sounds for background-geolocation life-cycle.
+        });
+
+        // Turn ON the background-geolocation system.  The user will be tracked whenever they suspend the app.
+        bgGeo.start();
+
+        // If you wish to turn OFF background-tracking, call the #stop method.
+        // bgGeo.stop()
+
+
+
 
 
     }
 
-    function onResume() {
-        alert('in resume mode');
-        window.plugin.backgroundMode.disable();
-    }
 
-    function onPause() {
-        alert('in background mode');
-        window.plugin.backgroundMode.enable();
-    }
 };
