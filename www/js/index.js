@@ -60,14 +60,13 @@ var app = {
 
 
         var suc = function (pos) {
-            alert('connected..');
-            setTimeout(
-                socket.emit('geoData', {
-                    lat: pos.coords.latitude,
-                    lng: pos.coords.longitude,
-                    deviceId: device.uuid,
-                    ts: Date.now()
-                }), 1000);
+            alert('watchPosition');
+            socket.emit('geoData', {
+                lat: pos.coords.latitude,
+                lng: pos.coords.longitude,
+                deviceId: device.uuid,
+                ts: Date.now()
+            });
 
             var msg = document.getElementById('msg');
 
