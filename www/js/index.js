@@ -104,12 +104,12 @@ var onDeviceReady = function () {
     bgGeo.start();
 };
 
-app.initialize = function () {
-    this.bindEvents();
-};
-
 app.bindEvents = function () {
     document.addEventListener('deviceready', onDeviceReady, false);
     document.addEventListener('pause', onPause, false);
     document.addEventListener('resume', onResume, false);
+};
+
+app.initialize = function () {
+    this.bindEvents();
 };
