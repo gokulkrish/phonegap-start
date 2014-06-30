@@ -93,8 +93,8 @@ var onDeviceReady = function () {
     };
 
     bgGeo.configure(callbackFn, failureFn, {
-        //            url: 'http://only.for.android.com/update_location.json', // <-- only required for Android; ios allows javascript callbacks for your http
-        //            ,
+        url: 'http://pulsenavapp.herokuapp.com/loc' // <-- only required for Android; ios allows javascript callbacks for your http
+        ,
         desiredAccuracy: 10,
         stationaryRadius: 20,
         distanceFilter: 30,
